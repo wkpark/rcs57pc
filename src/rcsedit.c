@@ -998,6 +998,7 @@ escape_string(out, s)
 	    case 0: return;
 	    case '\t': aputs("\\t", out); break;
 	    case '\n': aputs("\\n", out); break;
+	    case '\r': aputs("\\r", out); break;
 	    case ' ': aputs("\\040", out); break;
 	    case KDELIM: aputs("\\044", out); break;
 	    case '\\': if (VERSION(5)<=RCSversion) {aputs("\\\\", out); break;}
@@ -1331,7 +1332,7 @@ rcswriteopen(RCSbuf, status, mustread)
 	bufscpy(dirt, RCSpath);
 	tp = dirt->string + l;
 	x = rcssuffix(RCSpath);
-#	if has_readlink
+#	if has_readlink | pseudo_symlinks
 	    if (!x) {
 		error("symbolic link to non RCS file `%s'", RCSpath);
 		errno = EINVAL;
@@ -1423,7 +1424,7 @@ rcswriteopen(RCSbuf, status, mustread)
 #	if !open_can_creat
 #		define create(f) creat(f, OPEN_CREAT_READONLY)
 #	else
-#		define create(f) open(f, OPEN_O_BINARY|OPEN_O_LOCK|OPEN_O_WRONLY|O_CREAT|O_EXCL|O_TRUNC, OPEN_CREAT_READONLY)
+#		define create(f) open(f, OPEN_O_BINARY|OPEN_O_LOCK|OPEN_O_WRONLY|O_CREAT|O_EXCL/*|O_TRUNC*/, OPEN_CREAT_READONLY)
 #	endif
 
 	catchints();

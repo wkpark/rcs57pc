@@ -982,8 +982,8 @@ fd2RILE(fd, name, type, status)
 			f->deallocate = nothing_to_deallocate;
 #		endif
 		if (!s) {
-		    static unsigned char nothing;
-		    f->base = &nothing; /* Any nonzero address will do.  */
+		    f->base = tnalloc(unsigned char, 1);
+		    f->base[0] = 0; /* it will be free()ed later */
 		} else {
 		    f->base = 0;
 #		    if has_map_fd

@@ -103,9 +103,9 @@ merge(tostdout, edarg, label, argv)
 			exiterr();
 	}
 	if (t) {
-		if (!(f = fopenSafer(argv[0], "w")))
+		if (!(f = fopenSafer(argv[0], FOPEN_W_WORK)))
 			efaterror(argv[0]);
-		if (!(rt = Iopen(t, "r", (struct stat*)0)))
+		if (!(rt = Iopen(t, FOPEN_R_WORK, (struct stat*)0)))
 			efaterror(t);
 		fastcopy(rt, f);
 		Ifclose(rt);

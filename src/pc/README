@@ -1,0 +1,68 @@
+PC RCS configuration
+
+This directory has been integrated with RCS 5.7.
+
+	$Id$
+
+	Copyright 1991, 1992, 1995 by Paul Eggert
+	Distributed under license by the Free Software Foundation, Inc.
+
+	This file is part of RCS.
+
+	RCS is free software; you can redistribute it and/or modify it
+	under the terms of the GNU General Public License as published
+	by the Free Software Foundation; either version 2, or (at your
+	option) any later version.
+
+	RCS is distributed in the hope that it will be useful, but
+	WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public
+	License along with RCS; see the file COPYING.  If not, write to
+	the Free Software Foundation, 675 Mass Ave, Cambridge, MA
+	02139, USA.
+
+	Report problems and direct all questions to:
+
+		rcs-bugs@cs.purdue.edu
+
+This is $Revision$ of the PC RCS support directory.
+It contains extra files useful for getting RCS 5.7 (and later versions)
+to run under the PC operating systems MS-DOS, OS/2 and Windows 95/NT.
+
+Put this directory into the src\pc subdirectory of the RCS source tree,
+so that this file becomes src\pc\README.
+
+To compile, go to .. and use pc\Makefile to build.
+See the pc\Makefile for compiler and target environment support.
+You may stumble across some support for Borland compilers
+but that is currently not supported and most certainly does NOT work.
+
+See also ..\README, particularly the note about text_work_stdio.
+
+
+Remember, this software is distributed under the GNU General Public License,
+which means that normally you must distribute sources whenever you distribute
+executables; see COPYING.
+
+
+Credits:
+  Frank Whaley of WordStar ported RCS to MS-DOS and OS/2.
+  Rich Braun of Kronos contributed Novell support.
+  Kai Uwe Rommel contributed many fixes and much support.
+  Paul Eggert of Twin Sun integrated.
+
+
+	KNOWN PROBLEMS
+
+If you specify a filename longer than the DOS limits, RCS uses the
+long filename, but DOS silently truncates it.  This can lead to
+spurious differences e.g. in the filenames in Id strings, because
+the filename you tell `rcsdiff' may differ from the name you told `co'.
+
+By default, pathnames in $Header and $Source keyword expansions use /
+to separate pathname components, because \ prevents these expansions
+from being usefully placed into C strings.  If you prefer \ anyway,
+change the definition of SLASH in conf.h to '\\'.

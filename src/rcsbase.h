@@ -188,6 +188,10 @@ Report problems and direct all questions to:
 
 #include "conf.h"
 
+#ifndef RCSIMP
+#define RCSIMP
+#endif
+
 
 #define EXIT_TROUBLE DIFF_TROUBLE
 
@@ -447,10 +451,10 @@ int merge P((int,char const*,char const*const[3],char const*const[3]));
 
 /* rcsedit */
 #define ciklogsize 23 /* sizeof("checked in with -k by ") */
-extern FILE *fcopy;
-extern char const *resultname;
-extern char const ciklog[ciklogsize];
-extern int locker_expansion;
+extern RCSIMP FILE *fcopy;
+extern RCSIMP char const *resultname;
+extern RCSIMP char const ciklog[ciklogsize];
+extern RCSIMP int locker_expansion;
 RILE *rcswriteopen P((struct buf*,struct stat*,int));
 char const *makedirtemp P((int));
 char const *getcaller P((void));
@@ -491,12 +495,12 @@ int rcsfcmp P((RILE*,struct stat const*,char const*,struct hshentry const*));
 /* rcsfnms */
 #define bufautobegin(b) clear_buf(b)
 #define clear_buf(b) (VOID ((b)->string = 0, (b)->size = 0))
-extern FILE *workstdout;
-extern char *workname;
-extern char const *RCSname;
-extern char const *suffixes;
+extern RCSIMP FILE *workstdout;
+extern RCSIMP char *workname;
+extern RCSIMP char const *RCSname;
+extern RCSIMP char const *suffixes;
 extern int fdlock;
-extern struct stat RCSstat;
+extern RCSIMP struct stat RCSstat;
 RILE *rcsreadopen P((struct buf*,struct stat*,int));
 char *bufenlarge P((struct buf*,char const**));
 char const *basefilename P((char const*));
@@ -513,8 +517,8 @@ void bufscpy P((struct buf*,char const*));
 void tempunlink P((void));
 
 /* rcsgen */
-extern int interactiveflag;
-extern struct buf curlogbuf;
+extern RCSIMP int interactiveflag;
+extern RCSIMP struct buf curlogbuf;
 char const *buildrevision P((struct hshentries const*,struct hshentry*,FILE*,int));
 int getcstdin P((void));
 int putdtext P((struct hshentry const*,char const*,FILE*,int));
@@ -527,7 +531,7 @@ void putdftext P((struct hshentry const*,RILE*,FILE*,int));
 
 /* rcskeep */
 extern int prevkeys;
-extern struct buf prevauthor, prevdate, prevname, prevrev, prevstate;
+extern RCSIMP struct buf prevauthor, prevdate, prevname, prevrev, prevstate;
 int getoldkeys P((RILE*));
 
 /* rcskeys */
@@ -535,16 +539,16 @@ extern char const *const Keyword[];
 enum markers trymatch P((char const*));
 
 /* rcslex */
-extern FILE *foutptr;
-extern FILE *frewrite;
-extern RILE *finptr;
+extern RCSIMP FILE *foutptr;
+extern RCSIMP FILE *frewrite;
+extern RCSIMP RILE *finptr;
 extern char const *NextString;
 extern enum tokens nexttok;
 extern int hshenter;
-extern int nerror;
-extern int nextc;
-extern int quietflag;
-extern long rcsline;
+extern RCSIMP int nerror;
+extern RCSIMP int nextc;
+extern RCSIMP int quietflag;
+extern RCSIMP long rcsline;
 char const *getid P((void));
 void efaterror P((char const*)) exiting;
 void enfaterror P((int,char const*)) exiting;
@@ -615,7 +619,7 @@ void workwarn P((char const*,...)) printf_string(1,2);
 #endif
 
 /* rcsmap */
-extern enum tokens const ctab[];
+extern RCSIMP enum tokens const ctab[];
 
 /* rcsrev */
 char *partialno P((struct buf*,char const*,int));
@@ -649,18 +653,18 @@ struct diffcmd {
 		adprev, /* previous 'a' line1+1 or 'd' line1 */
 		dafter; /* sum of previous 'd' line1 and previous 'd' nlines */
 };
-extern char const      * Dbranch;
-extern struct access   * AccessList;
-extern struct assoc    * Symbols;
-extern struct cbuf Comment;
+extern RCSIMP char const      * Dbranch;
+extern RCSIMP struct access   * AccessList;
+extern RCSIMP struct assoc    * Symbols;
+extern RCSIMP struct cbuf Comment;
 extern struct cbuf Ignored;
-extern struct rcslock *Locks;
-extern struct hshentry * Head;
-extern int		 Expand;
-extern int               StrictLocks;
-extern int               TotalDeltas;
-extern char const *const expand_names[];
-extern char const
+extern RCSIMP struct rcslock *Locks;
+extern RCSIMP struct hshentry * Head;
+extern RCSIMP int		 Expand;
+extern RCSIMP int               StrictLocks;
+extern RCSIMP int               TotalDeltas;
+extern RCSIMP char const *const expand_names[];
+extern RCSIMP char const
 	Kaccess[], Kauthor[], Kbranch[], Kcomment[],
 	Kdate[], Kdesc[], Kexpand[], Khead[], Klocks[], Klog[],
 	Knext[], Kstate[], Kstrict[], Ksymbols[], Ktext[];
@@ -685,7 +689,7 @@ void time2date P((time_t,char[datesize]));
 void zone_set P((char const*));
 
 /* rcsutil */
-extern int RCSversion;
+extern RCSIMP int RCSversion;
 FILE *fopenSafer P((char const*,char const*));
 char *cgetenv P((char const*));
 char *fstr_save P((char const*));
@@ -754,4 +758,4 @@ void setRCSversion P((char const*));
 #endif
 
 /* version */
-extern char const RCS_version_string[];
+extern RCSIMP char const RCS_version_string[];

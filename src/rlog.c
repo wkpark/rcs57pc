@@ -218,11 +218,14 @@ static struct authors *authorlist;
 static struct rcslockers *lockerlist;
 static struct stateattri *statelist;
 
+static int onlyid;
+static char const *numrev2symbrev P((char const *numrev));
+
 
 mainProg(rlogId, "rlog", "$Id: rlog.c,v 5.18 1995/06/16 06:19:24 eggert Exp $")
 {
 	static char const cmdusage[] =
-		"\nrlog usage: rlog -{bhLNRt} -ddates -l[lockers] -r[revs] -sstates -Vn -w[logins] -xsuff -zzone file ...";
+		"\nrlog usage: rlog -{bhLNRtIZ} -ddates -l[lockers] -r[revs] -sstates -Vn -w[logins] -xsuff -zzone file ...";
 
 	register FILE *out;
 	char *a, **newargv;
@@ -236,6 +239,7 @@ mainProg(rlogId, "rlog", "$Id: rlog.c,v 5.18 1995/06/16 06:19:24 eggert Exp $")
 	int descflag, selectflag;
 	int onlylockflag;  /* print only files with locks */
 	int onlyRCSflag;  /* print only RCS pathname */
+	int onlylockers = 0;
 	int pre5;
 	int shownames;
 	int revno;
@@ -260,6 +264,14 @@ mainProg(rlogId, "rlog", "$Id: rlog.c,v 5.18 1995/06/16 06:19:24 eggert Exp $")
 
 		case 'R':
 			onlyRCSflag =true;
+			break;
+
+		case 'I':
+			onlyid = (*a == 'I') ? 2 : 1;
+			break;
+
+		case 'Z':
+			onlylockers = (*a == 'Z') ? 2 : 1;
 			break;
 
                 case 'l':
@@ -362,6 +374,68 @@ mainProg(rlogId, "rlog", "$Id: rlog.c,v 5.18 1995/06/16 06:19:24 eggert Exp $")
 	     * and finptr the file descriptor;
 	     * workname contains the name of the working file.
              */
+
+	    /* Options 'Z' and 'ZZ' added to quickly get the relevant Data
+	     * for locked File(s)/Revisions.
+	     * Options 'I' and 'II' added to easily get Information about
+	     * unlocked File(s) of the specified Revision(s). These Records
+	     * could be used as an Entry of an Revision-List.
+	     * The single-option Version prints Basenames, the double-option
+	     * Version prints Filenames with the full path.
+	     */
+	    if (onlyid) {
+	      if (Locks) { 		/* Issue Warnings for locked Versions */
+		currlock = Locks;
+		aprintf (stderr, "Warning: there are Locks for File %s:\n",
+			 onlyid == 1 ? RCSname : getfullRCSname());
+		while (currlock) {
+		  aprintf (stderr, 
+			   "\tFile: %s   Revision: %s [%s]  locked by: %s\n",
+			   onlyid == 1 ? RCSname : getfullRCSname(), 
+			   currlock->delta->num, 
+			   numrev2symbrev (currlock->delta->num),
+			   currlock->login);
+		  currlock = currlock->nextlock;
+		}
+	      }
+
+	      if (! Head) continue;
+	      gettree ();
+	      revno = 0;
+	      getnumericrev ();
+	      exttree (Head);
+	      currdate = duelst;
+	      while (currdate) {
+		/* VOID sprintf (currdate->strtdate,dateform,0,0,0,0,0,0); */
+		time2date(0,currdate->strtdate);
+		recentdate (Head, currdate);
+		currdate = currdate->dnext;
+	      }
+	      revno = extdate (Head);
+	      getdesc (false);
+	      if (revno) {
+		while (! (delta = readdeltalog())->selector  ||  --revno) ;
+		if (delta->next && countnumflds(delta->num)==2) {
+		  while (readdeltalog() != delta->next) ;
+		}
+		putrunk ();
+		putree (Head);
+	      }
+	      continue;
+	    }
+
+	    if (onlylockers) {
+	      currlock = Locks;
+	      while (currlock) {
+		aprintf (out, "File: %s   Revision: %s [%s]  locked by: %s\n",
+			 onlylockers == 1 ? RCSname : getfullRCSname(), 
+			 currlock->delta->num, 
+			 numrev2symbrev (currlock->delta->num),
+			 currlock->login);
+		currlock = currlock->nextlock;
+	      }
+	      continue;
+	    }
 
 	    /* Keep only those locks given by -l.  */
 	    if (lockflag)
@@ -571,6 +645,16 @@ putadelta(node,editscript,trunk)
             return;
 
 	out = stdout;
+
+	if (onlyid) {
+	  aprintf (out, 
+		   "File: %s   Revision: %s [%s]  Date: %s   Author: %s  State: %s\n",
+		   onlyid == 1 ? workname : getfullRCSname(),
+		   node->num, numrev2symbrev (node->num),
+		   date2str (node->date, datebuf), node->author, node->state);
+	  return;
+	}
+
 	aprintf(out,
 		"----------------------------\nrevision %s%s",
 		node->num,  pre5 ? "        " : ""
@@ -1273,4 +1357,16 @@ register     char    * argv;
 	    else
 		error("missing `,' near `%c%s'", c, argv+1);
 	}
+}
+
+static char const *numrev2symbrev (numrev)
+char const *numrev;
+{
+	struct assoc const *p;
+
+	for (p = Symbols; p; p = p->nextassoc) {
+		if (! strcmp (numrev, p->num)) return (p->symbol);
+	}
+
+	return ("");
 }

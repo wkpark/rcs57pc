@@ -325,6 +325,10 @@ mainProg(rcsdiffId, "rcsdiff", "$Id: rcsdiff.c,v 5.19 1995/06/16 06:19:24 eggert
 		}
 	    }
 
+#ifdef bad_workmode
+	    /* for PC operating systems, where user/group/other are the same */
+	    workstat.st_mode &= ~(S_IWGRP|S_IWOTH);
+#endif
 
 	    gettree(); /* reads in the delta tree */
 

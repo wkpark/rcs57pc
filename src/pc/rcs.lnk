@@ -1,0 +1,24 @@
+system begin os2v1exe
+    option osname='OS/2 16-bit'
+    option newfiles
+    libpath %WATCOM%\lib286
+    libpath %WATCOM%\lib286\os2
+    format os2 ^
+end
+
+system begin os2v2exe
+    option osname='OS/2 32-bit'
+    option caseexact
+    libpath %WATCOM%\lib386
+    libpath %WATCOM%\lib386\os2
+    format os2 lx ^
+end
+
+system begin os2v2dll
+    option osname='OS/2 32-bit DLL'
+    option caseexact
+    option manyautodata
+    libpath %WATCOM%\lib386
+    libpath %WATCOM%\lib386\os2
+    format os2 lx dll ^
+end

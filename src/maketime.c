@@ -26,18 +26,7 @@ Report problems and direct all questions to:
 
 */
 
-#if has_conf_h
-#	include "conf.h"
-#else
-#	ifdef __STDC__
-#		define P(x) x
-#	else
-#		define const
-#		define P(x) ()
-#	endif
-#	include <stdlib.h>
-#	include <time.h>
-#endif
+#include "rcsbase.h"
 
 #include "partime.h"
 #include "maketime.h"

@@ -600,7 +600,7 @@ finopen(rcsopen, mustread)
 	preferold  =  RCSbuf.string[0] && (mustread||0<=fdlock);
 
 	finptr = (*rcsopen)(&RCSb, &RCSstat, mustread);
-	interesting = finptr || errno!=ENOENT;
+	interesting = finptr || (errno!=ENOENT && errno!=ENOTDIR);
 	if (interesting || !preferold) {
 		/* Use the new name.  */
 		RCSerrno = errno;
@@ -608,6 +608,50 @@ finopen(rcsopen, mustread)
 	}
 	return interesting;
 }
+
+#if pseudo_symlinks
+
+	static int
+expand_symlink(RCSb, namelen)
+	struct buf *RCSb;
+	int namelen;
+{
+  struct stat test;
+  FILE *file;
+  char buffer[256];
+  int len;
+
+  if (stat(RCSb->string, &test) || S_ISDIR(test.st_mode))
+    return 0;
+    
+  if ((file = fopen(RCSb->string, "r")) == NULL)
+    return 0;
+
+  if (fgets(buffer, sizeof(buffer), file) == NULL)
+    return 0;
+
+  fclose(file);
+  len = strlen(buffer);
+
+  if (buffer[len - 1] == '\n')
+    buffer[--len] = 0;
+
+  if (buffer[0] == '/' || buffer[0] == '\\' || 
+      (isalpha(buffer[0]) && buffer[1] == ':'))
+  {
+    bufrealloc(RCSb, len + namelen);
+    strcpy(RCSb->string, buffer);
+  }
+  else
+  {
+    bufrealloc(RCSb, strlen(RCSb->string) - rcslen + len + namelen);
+    strcpy(RCSb->string + strlen(RCSb->string) - rcslen, buffer);
+  }
+
+  return 1;
+}
+
+#endif
 
 	static int
 fin2open(d, dlen, base, baselen, x, xlen, rcsopen, mustread)
@@ -635,6 +679,11 @@ fin2open(d, dlen, base, baselen, x, xlen, rcsopen, mustread)
 	VOID memcpy(p = RCSb.string, d, dlen);
 	VOID memcpy(p += dlen, rcsdir, rcslen);
 	p += rcslen;
+#if pseudo_symlinks
+	*p = 0;
+	if (expand_symlink(&RCSb, baselen + xlen + 2))
+	  p = RCSb.string + strlen(RCSb.string);
+#endif
 	*p++ = SLASH;
 	VOID memcpy(p, base, baselen);
 	VOID memcpy(p += baselen, x, xlen);
@@ -725,7 +774,7 @@ pairnames(argc, argv, rcsopen, mustread, quiet)
 		if (
 		    1 < argc  &&
 		    (x = rcssuffix(RCS1 = argv[1]))  &&
-		    baselen  <=  x - RCS1  &&
+		    baselen  <=  (x - RCS1)  &&
 		    ((RCSbase=x-baselen)==RCS1 || isSLASH(RCSbase[-1])) &&
 		    memcmp(base, RCSbase, baselen) == 0
 		) {

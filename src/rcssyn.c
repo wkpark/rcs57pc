@@ -657,7 +657,7 @@ int argc; char * argv[];
 		aputs("No input file\n",stderr);
 		exitmain(EXIT_FAILURE);
         }
-	if (!(finptr = Iopen(argv[1], FOPEN_R, (struct stat*)0))) {
+	if (!(finptr = Iopen(argv[1], FOPEN_RB, (struct stat*)0))) {
 		faterror("can't open input file %s", argv[1]);
         }
         Lexinit();

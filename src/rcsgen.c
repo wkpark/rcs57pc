@@ -589,7 +589,7 @@ putdtext(delta, srcname, fout, diffmt)
  */
 {
 	RILE *fin;
-	if (!(fin = Iopen(srcname, "r", (struct stat*)0))) {
+	if (!(fin = Iopen(srcname, FOPEN_R_WORK, (struct stat*)0))) {
 		eerror(srcname);
 		return false;
 	}
