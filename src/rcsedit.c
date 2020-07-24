@@ -1883,7 +1883,8 @@ donerewrite(changed, newRCStime)
 
 	if (changed && !nerror) {
 		if (finptr) {
-			fastcopy(finptr, frewrite);
+			if (Head)
+				fastcopy(finptr, frewrite);
 			Izclose(&finptr);
 		}
 		if (1 < RCSstat.st_nlink)
