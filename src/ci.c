@@ -1244,8 +1244,8 @@ xpandfile(unexfile, delta, exname, dolog)
 getlogmsg()
 /* Obtain and yield a log message.
  * If a log message is given with -m, yield that message.
+ * Reads a character string from the terminal.
  * If this is the initial revision, yield a standard log message.
- * Otherwise, reads a character string from the terminal.
  * Stops after reading EOF or a single '.' on a
  * line. getlogmsg prompts the first time it is called for the
  * log message; during all later calls it asks whether the previous
@@ -1280,12 +1280,6 @@ getlogmsg()
 		return logmsg;
 	}
 
-	if (!targetdelta && (
-		cmpnum(newdelnum.string,"1.1")==0 ||
-		cmpnum(newdelnum.string,"1.0")==0
-	))
-		return initiallog;
-
 	if (logmsg.size) {
                 /*previous log available*/
 	    if (yesorno(true, "reuse log message of previous file? [yn](y): "))
@@ -1298,6 +1292,13 @@ getlogmsg()
         /* now check whether the log message is not empty */
 	if (logmsg.size)
 		return logmsg;
+
+	if (!targetdelta && (
+		cmpnum(newdelnum.string,"1.1")==0 ||
+		cmpnum(newdelnum.string,"1.0")==0
+	))
+		return initiallog;
+
 	return emptylog;
 }
 
