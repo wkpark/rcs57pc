@@ -86,13 +86,15 @@ emxnt-debug:
 # mingw32 (gcc) -> 32-bit Win95/NT executables
 mingw32:
 	$(MAKE) all -f $D/Makefile MINGW32="" OS="nt" \
-	CC="gcc" CCFLAGS="-O -D__WIN32__ -D__32BIT__ -DRCSDLL" \
-	LDFLAGS="-s -o ./" O=".o" A=".a" AR="ar" \
-	DLDFLAGS="-ladvapi32 -s -o ./"
+	CC="x86_64-w64-mingw32-gcc" CCFLAGS="-O -D__WIN32__ -D__32BIT__ -DRCSDLL" \
+	LDFLAGS=" -s -o ./" O=".o" A=".a" AR="x86_64-w64-mingw32-gcc-ar" \
+	DLDFLAGS="-ladvapi32 -s -o ./" \
+	DLLWRAP="x86_64-w64-mingw32-dllwrap" \
+	DLLTOOL="x86_64-w64-mingw32-dlltool" REMOVE=rm
 mingw32-static:
 	$(MAKE) all -f $D/Makefile GCCS="" OS="nt" \
-	CC="gcc" CCFLAGS="-O -D__WIN32__ -D__32BIT__" \
-	LDFLAGS="-ladvapi32 -s -o ./" O=".o" A=".a" AR="ar"
+	CC="i686-w64-mingw32-gcc" CCFLAGS="-O -D__WIN32__ -D__32BIT__" \
+	LDFLAGS="-ladvapi32 -s -o ./" O=".o" A=".a" AR="i686-w64-mingw32-gcc-ar" REMOVE=rm
 mingw32-debug:
 	$(MAKE) all -f $D/Makefile GCCS="" OS="nt" \
 	CC="gcc -g" CCFLAGS="-D__WIN32__ -D__32BIT__ -DDEBUG" \
@@ -292,9 +294,9 @@ $(EMXN)rcslib.dll: dllmain$O $(RCSLIB) $D/rcslib.def
 # dynamic/shared library variant, MinGW32, NT only
 $(MINGW32)rcslib$A: $D/rcslib.def $(MINGW32)rcslib.dll
 	-$(REMOVE) $@
-	dlltool -d $D/rcslib.def -D $(MINGW32)rcslib.dll -l $@
+	$(DLLTOOL) -d $D/rcslib.def -D $(MINGW32)rcslib.dll -l $@
 $(MINGW32)rcslib.dll: dllmain$O $(RCSLIB) $D/rcslib.def
-	dllwrap dllmain$O $(RCSLIB) $(DLDFLAGS)$@ --def $D/rcslib.def
+	$(DLLWRAP) dllmain$O $(RCSLIB) $(DLDFLAGS)$@ --def $D/rcslib.def
 
 # static library variant, gcc
 $(GCCS)rcslib$A: $(RCSLIB)
