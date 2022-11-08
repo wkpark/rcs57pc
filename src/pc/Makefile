@@ -89,7 +89,6 @@ mingw32:
 	CC="x86_64-w64-mingw32-gcc" CCFLAGS="-O -D__WIN32__ -D__32BIT__ -DRCSDLL" \
 	LDFLAGS=" -s -o ./" O=".o" A=".a" AR="x86_64-w64-mingw32-gcc-ar" \
 	DLDFLAGS="-ladvapi32 -s -o ./" \
-	DLLWRAP="x86_64-w64-mingw32-dllwrap" \
 	DLLTOOL="x86_64-w64-mingw32-dlltool" REMOVE=rm
 mingw32-static:
 	$(MAKE) all -f $D/Makefile GCCS="" OS="nt" \
@@ -296,7 +295,7 @@ $(MINGW32)rcslib$A: $D/rcslib.def $(MINGW32)rcslib.dll
 	-$(REMOVE) $@
 	$(DLLTOOL) -d $D/rcslib.def -D $(MINGW32)rcslib.dll -l $@
 $(MINGW32)rcslib.dll: dllmain$O $(RCSLIB) $D/rcslib.def
-	$(DLLWRAP) dllmain$O $(RCSLIB) $(DLDFLAGS)$@ --def $D/rcslib.def
+	$(CC) -shared dllmain$O $(RCSLIB) $(DLDFLAGS)$@ $D/rcslib.def
 
 # static library variant, gcc
 $(GCCS)rcslib$A: $(RCSLIB)
