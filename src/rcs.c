@@ -728,7 +728,7 @@ getaccessor(opt, command)
 
 
 {
-        register c;
+        register int c;
 	register char *sp;
 
 	sp = opt;
@@ -788,7 +788,7 @@ char    *sp;
 {
 	char const *temp;
         struct  Status  *pt;
-        register        c;
+        register int      c;
 
 	while ((c = *++sp) ==' ' || c == '\t' || c == '\n')
 	    continue;

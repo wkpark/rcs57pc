@@ -176,7 +176,7 @@ mainProg(rcsdiffId, "rcsdiff", "$Id: rcsdiff.c,v 5.19 1995/06/16 06:19:24 eggert
     struct hshentry * target;
     char *a, *dcp, **newargv;
     int no_diff_means_no_output;
-    register c;
+    register int c;
 
     exitstatus = DIFF_SUCCESS;
 

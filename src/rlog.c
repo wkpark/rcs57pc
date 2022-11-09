@@ -855,7 +855,7 @@ char   *argv;
 /*              and store in authorlist                   */
 
 {
-        register    c;
+        register    int c;
         struct     authors  * newauthor;
 
         argv--;

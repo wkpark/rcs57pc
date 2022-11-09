@@ -306,7 +306,7 @@ nextlex()
  * For ID's and NUM's, NextString is set to the character string.
  * Assumption: nextc contains the next character.
  */
-{       register c;
+{       register int c;
 	declarecache;
 	register FILE *frew;
         register char * sp;
@@ -671,7 +671,7 @@ readstring()
 /* skip over characters until terminating single SDELIM        */
 /* If foutptr is set, copy every character read to foutptr.    */
 /* Does not advance nextlex at the end.                        */
-{       register c;
+{       register int c;
 	declarecache;
 	register FILE *frew;
 	register RILE *fin;
@@ -704,7 +704,7 @@ printstring()
  * Does not advance nextlex at the end.
  */
 {
-        register c;
+        register int c;
 	declarecache;
 	register FILE *fout;
 	register RILE *fin;
@@ -742,7 +742,7 @@ savestring(target)
  * Yield a copy of *TARGET, except with exact length.
  */
 {
-        register c;
+        register int c;
 	declarecache;
 	register FILE *frew;
 	register char *tp;

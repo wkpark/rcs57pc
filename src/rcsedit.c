@@ -617,7 +617,7 @@ copystring()
  * editline is incremented by the number of lines copied.
  * Assumption: next character read is first string character.
  */
-{	register c;
+{	register int c;
 	declarecache;
 	register FILE *frew, *fcop;
 	register int amidline;
@@ -862,7 +862,7 @@ expandline(infile, outfile, delta, delimstuffed, frewfile, dolog)
  * 2 if a complete line is copied; adds 1 to yield if expansion occurred.
  */
 {
-	register c;
+	register int c;
 	declarecache;
 	register FILE *out, *frew;
 	register char * tp;

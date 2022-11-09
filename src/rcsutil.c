@@ -685,7 +685,7 @@ static void setup_catchsig P((int const*,int));
 	int const *sig;
 	int sigs;
   {
-	register i;
+	register int i;
 
 	for (i=sigs; 0<=--i; )
 		if (
